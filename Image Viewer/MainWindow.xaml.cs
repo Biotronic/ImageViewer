@@ -38,6 +38,7 @@ namespace ImageViewer
 
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (newTagBox.IsFocused) return;
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (e.Key)
             {
@@ -45,10 +46,10 @@ namespace ImageViewer
                     ChangeImage(FilteredFileList.Delta.Prev);
                     break;
                 case Key.Right:
-                    ChangeImage(FilteredFileList.Delta.Prev);
+                    ChangeImage(FilteredFileList.Delta.Next);
                     break;
                 case Key.Delete:
-                    _files.CurrentFile.Delete(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
+                    CurrentFile.Delete(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
                     ChangeImage();
                     break;
                 case Key.Space:
@@ -85,7 +86,7 @@ namespace ImageViewer
 
         private void UpdateImage(Action done)
         {
-            var cf = _files.CurrentFile;
+            var cf = CurrentFile;
             if (cf == null)
             {
                 DisplayNoImage();
@@ -132,11 +133,6 @@ namespace ImageViewer
 
         private void ChangeImage(FilteredFileList.Delta delta = FilteredFileList.Delta.None)
         {
-            ((BlurEffect)image.Effect).Radius = 25;
-            label.Visibility = Visibility.Visible;
-            label.Text = "Loading...";
-
-
             ((BlurEffect) image.Effect).Radius = 25;
             label.Visibility = Visibility.Visible;
             label.Text = "Loading...";
@@ -190,7 +186,7 @@ namespace ImageViewer
 
         private void tagScrollList_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (tagScrollList.ActualWidth < tagScrollList.MaxWidth) return;
+            if (tagScrollList.ActualWidth > MinTagViewWidth) return;
             tagScrollList.Width = double.NaN;
             Animate(0, 1, () => {
                 tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
@@ -222,27 +218,31 @@ namespace ImageViewer
 
         private void Animate(double from, double to, Action end)
         {
+            tagList.Focus();
+
             var se = new CubicEase() {EasingMode = EasingMode.EaseInOut};
 
             var da1 = new DoubleAnimation(myGrid.ActualWidth * from + MinTagViewWidth, myGrid.ActualWidth * to + MinTagViewWidth, new Duration(TimeSpan.FromMilliseconds(125))) { EasingFunction = se };
             var da2 = new DoubleAnimation(from, to, new Duration(TimeSpan.FromMilliseconds(250))) { EasingFunction = se };
             da2.Completed += (o, args) =>end();
             tagScrollList.BeginAnimation(ScrollViewer.MaxWidthProperty, da1);
-            tagList.BeginAnimation(ItemsControl.OpacityProperty, da2);
+            panel.BeginAnimation(ItemsControl.OpacityProperty, da2);
         }
 
         public static SolidColorBrush TagMatch(string tag)
         {
-            return _instance._files.CurrentFile.HasTag(tag) ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+            return CurrentFile != null && CurrentFile.HasTag(tag) ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
         }
+
+        private static FileElement CurrentFile => _instance._files.CurrentFile;
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var tag = ((TextBlock) sender).Text;
-            if (_files.CurrentFile.HasTag(tag))
-                _files.CurrentFile.AddTag(tag);
+            if (CurrentFile.HasTag(tag))
+                CurrentFile.RemoveTag(tag);
             else
-                _files.CurrentFile.RemoveTag(tag);
+                CurrentFile.AddTag(tag);
             ((TextBlock) sender).Foreground = TagMatch(tag);
         }
 
@@ -251,6 +251,18 @@ namespace ImageViewer
             var tmp = tagList.ItemsSource;
             tagList.ItemsSource = null;
             tagList.ItemsSource = tmp;
+        }
+
+        private void newTagBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var tag = ((TextBox)sender).Text;
+            if (e.Key != Key.Enter) return;
+
+
+            if (CurrentFile.HasTag(tag))
+            {
+                CurrentFile.AddTag(tag);
+            }
         }
     }
 }

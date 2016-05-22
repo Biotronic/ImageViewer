@@ -52,7 +52,9 @@ namespace ImageViewer
                         delta == Delta.Next ? i >  _imageIndex :
                         delta == Delta.Prev ? i <  _imageIndex :
                                               i <= _imageIndex;
-                var defaultValue = (delta == Delta.Next ? FilteredFiles.First() : FilteredFiles.Last());
+                var defaultValue = delta == Delta.Next
+                        ? FilteredFiles.First()
+                        : FilteredFiles.Last();
                 
                 if (delta == Delta.Next)
                     _imageIndex = FilteredFiles.FirstOrDefault(a => filter(a.Index), defaultValue).Index;
@@ -84,7 +86,7 @@ namespace ImageViewer
                     {
                         t.Add(e);
                     }
-                    v = t.ToList();
+                    v = t.OrderBy(a => a.TagName).ToList();
                 }
                 if (TaskList.Closing) break;
                 _ctrl.Dispatcher.Invoke(() =>

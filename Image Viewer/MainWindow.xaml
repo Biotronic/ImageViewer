@@ -26,18 +26,21 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer x:Name="tagScrollList" VerticalScrollBarVisibility="Hidden" Grid.Column="0" Height="{Binding ElementName=myGrid, Path=ActualHeight}" Grid.RowSpan="3" Width="20" MouseEnter="tagScrollList_MouseEnter" MouseLeave="tagScrollList_MouseLeave" MaxWidth="20">
-            <ItemsControl BorderThickness="0" x:Name="tagList" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="auto" VerticalContentAlignment="Center" Visibility="Visible" Opacity="0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="components:TagElement">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox x:Name="chkExclude" Padding="5,0,5,0" IsChecked="{Binding Exclude}" Content="-" Checked="ChangeTag" />
-                            <CheckBox x:Name="chkInclude" Padding="5,0,5,0" IsChecked="{Binding Include}" Content="+" Checked="ChangeTag" />
-                            <CheckBox x:Name="chkUnion"  Padding="5,0,5,0" IsChecked="{Binding Union}" Content="O" Checked="ChangeTag" />
-                            <TextBlock Text="{Binding TagName}" Foreground="{Binding Color}" MouseDown="TextBlock_MouseDown" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <StackPanel x:Name="panel"  Opacity="0">
+                <TextBox x:Name="newTagBox" PreviewKeyDown="newTagBox_PreviewKeyDown" />
+                <ItemsControl BorderThickness="0" x:Name="tagList" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="auto" VerticalContentAlignment="Center" Visibility="Visible">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="components:TagElement">
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox x:Name="chkExclude" Padding="5,0,5,0" IsChecked="{Binding Exclude}" Content="-" Checked="ChangeTag" />
+                                <CheckBox x:Name="chkInclude" Padding="5,0,5,0" IsChecked="{Binding Include}" Content="+" Checked="ChangeTag" />
+                                <CheckBox x:Name="chkUnion"  Padding="5,0,5,0" IsChecked="{Binding Union}" Content="O" Checked="ChangeTag" />
+                                <TextBlock Text="{Binding TagName}" Foreground="{Binding Color}" MouseDown="TextBlock_MouseDown" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </ScrollViewer>
         <Image x:Name="image" Grid.Column="2" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Grid.Row="1">
             <Image.Effect>
