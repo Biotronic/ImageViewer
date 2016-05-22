@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image Viewer", "Image Viewer\Image Viewer.csproj", "{B63A5394-4346-427B-BE92-DB502EE5FA0A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80338A23-7122-482E-96C5-38174EC5E79A} = {80338A23-7122-482E-96C5-38174EC5E79A}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Components", "Components\Components.csproj", "{80338A23-7122-482E-96C5-38174EC5E79A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Debug|x64.Build.0 = Debug|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Release|x64.ActiveCfg = Release|Any CPU
+		{B63A5394-4346-427B-BE92-DB502EE5FA0A}.Release|x64.Build.0 = Release|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Debug|x64.Build.0 = Debug|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Release|x64.ActiveCfg = Release|Any CPU
+		{80338A23-7122-482E-96C5-38174EC5E79A}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
