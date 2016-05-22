@@ -32,7 +32,6 @@ namespace ImageViewer
             }
 
             _files = new FilteredFileList(dir, tagList);
-            if (_files.Empty()) return;
             ChangeImage();
         }
 

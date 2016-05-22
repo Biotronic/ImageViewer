@@ -31,7 +31,7 @@ namespace ImageViewer
                 .ToList();
 
 
-            _imageIndex = InitialImage(Environment.GetCommandLineArgs().Length <= 1 ? null : Environment.GetCommandLineArgs()[1]).Index;
+            _imageIndex = (InitialImage(Environment.GetCommandLineArgs().Length <= 1 ? null : Environment.GetCommandLineArgs()[1])?.Index).GetValueOrDefault(0);
             TaskList.StartTask(EnumerateTags);
         }
 
@@ -136,7 +136,7 @@ namespace ImageViewer
 
         public FileElement InitialImage(string fileName)
         {
-            return _allFiles.FirstOrDefault(a => a.FileName == fileName, _allFiles.First());
+            return _allFiles.FirstOrDefault(a => a.FileName == fileName, _allFiles.FirstOrDefault());
         }
 
 

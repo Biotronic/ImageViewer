@@ -34,10 +34,15 @@ namespace ImageViewer
         public static void Close()
         {
             Closing = true;
-            while (_tasks.Any())
+
+            StartTask(() =>
             {
-                _tasks.First().Item1.Wait();
-            }
+                while (_tasks.Any(a => a.Item1.Id != Task.CurrentId))
+                {
+                    var t = _tasks.FirstOrDefault(a => a.Item1.Id != Task.CurrentId);
+                    t?.Item1.Wait();
+                }
+            });
         }
     }
 }
