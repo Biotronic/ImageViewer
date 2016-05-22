@@ -238,12 +238,13 @@ namespace ImageViewer
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var tag = ((TextBlock) sender).Text;
+            var txt = (TextBlock) sender;
+            var tag = txt.Text;
             if (CurrentFile.HasTag(tag))
                 CurrentFile.RemoveTag(tag);
             else
                 CurrentFile.AddTag(tag);
-            ((TextBlock) sender).Foreground = TagMatch(tag);
+            txt.Foreground = TagMatch(tag);
         }
 
         private void UpdateTagList()
@@ -255,14 +256,16 @@ namespace ImageViewer
 
         private void newTagBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var tag = ((TextBox)sender).Text;
+            var txt = (TextBlock)sender;
+            var tag = txt.Text;
             if (e.Key != Key.Enter) return;
 
 
-            if (CurrentFile.HasTag(tag))
-            {
-                CurrentFile.AddTag(tag);
-            }
+            if (!CurrentFile.HasTag(tag)) return;
+
+            CurrentFile.AddTag(tag);
+            _files.AddTag(tag);
+            txt.Text = "";
         }
     }
 }

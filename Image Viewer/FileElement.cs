@@ -64,16 +64,36 @@ namespace ImageViewer
             file = ShellFile.FromFilePath(FileName);
         }
 
-        public void AddTag(string tag)
+        public bool AddTag(string tag)
         {
-            Tags.Add(tag);
-            file.Properties.System.Keywords.Value = Tags.ToArray();
+            try
+            {
+                Tags.Add(tag);
+                file.Properties.System.Keywords.Value = Tags.ToArray();
+                return true;
+            }
+            catch
+            {
+                Tags.Remove(tag);
+                return false;
+            }
         }
 
-        public void RemoveTag(string tag)
+        public bool RemoveTag(string tag)
         {
             Tags.Remove(tag);
             file.Properties.System.Keywords.Value = Tags.ToArray();
+            try
+            {
+                Tags.Remove(tag);
+                file.Properties.System.Keywords.Value = Tags.ToArray();
+                return true;
+            }
+            catch
+            {
+                Tags.Add(tag);
+                return false;
+            }
         }
     }
 }

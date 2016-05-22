@@ -157,5 +157,12 @@ namespace ImageViewer
                 return result;
             }
         }
+
+        public void AddTag(string tag)
+        {
+            using (var tags = GetTags())
+                if (!tags.Contains(tag))
+                    tags.Add(tag);
+        }
     }
 }
