@@ -15,15 +15,17 @@ namespace ImageViewer
     public partial class MainWindow
     {
         private readonly FilteredFileList _files;
+        private readonly AnimatedPanel _tagListAnimation;
+        private readonly AnimatedPanel _quickTagsAnimation;
         private static MainWindow _instance;
         private WindowState _oldWindowState;
-        private AnimatedPanel _tagListAnimation;
 
         public MainWindow()
         {
             _instance = this;
             InitializeComponent();
-            _tagListAnimation = new AnimatedPanel(tagScrollList, panel, newTagBox, myGrid, MaxWidthProperty, ActualWidthProperty, () => tagScrollList.ActualWidth <= 10);
+            _tagListAnimation = new AnimatedPanel(tagScrollList, panel, newTagBox, myGrid, MaxWidthProperty, ActualWidthProperty, () => tagScrollList.MaxWidth <= 10, tagScrollList);
+            _quickTagsAnimation = new AnimatedPanel(quickTagsGrid, quickTags, quickTags, myGrid, MaxHeightProperty, ActualHeightProperty, () => quickTagsGrid.MaxHeight <= 10, tagScrollList);
 
             var dir = Environment.CurrentDirectory;
             if (Environment.GetCommandLineArgs().Length > 1)
@@ -225,7 +227,7 @@ namespace ImageViewer
 
         private void newTagBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var txt = (TextBlock)sender;
+            var txt = (TextBox)sender;
             var tag = txt.Text;
             if (e.Key != Key.Enter) return;
 
@@ -238,20 +240,43 @@ namespace ImageViewer
         }
 
         private double TagListTriggerArea => Math.Max(myGrid.ActualWidth * 0.05, 20);
+        private double TopTextTriggerArea => myGrid.ActualHeight - Math.Max(myGrid.ActualHeight*0.05, 20);
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
+            Title = $"{pos}";
             if (pos.X < TagListTriggerArea)
             {
                 _tagListAnimation.Show(() => tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Auto);
+            }
+            else if (pos.Y > TopTextTriggerArea)
+            {
+                quickTags.Text = string.Join(";", CurrentFile.Tags);
+                _quickTagsAnimation.Show();
+            }
+
+            if (pos.Y < TopTextTriggerArea && !quickTags.IsMouseOver)
+            {
+                _quickTagsAnimation.Hide();
             }
         }
 
         private void HideTagList(object sender, MouseEventArgs e)
         {
             tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            _tagListAnimation.Hide(() => { });
+            _tagListAnimation.Hide();
+        }
+
+        private void HideQuickTags(object sender, MouseEventArgs e)
+        {
+            _quickTagsAnimation.Hide();
+        }
+
+        private void quickTags_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            CurrentFile.SetTags(quickTags.Text.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

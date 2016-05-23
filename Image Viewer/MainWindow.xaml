@@ -52,5 +52,16 @@
                 <DropShadowEffect BlurRadius="25" ShadowDepth="0"/>
             </components:OutlinedTextBlock.Effect>
         </components:OutlinedTextBlock>
+        <Grid Grid.Row="2" Grid.Column="2" x:Name="quickTagsGrid" MaxHeight="0" MouseLeave="HideQuickTags">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Column="1" Grid.Row="0" x:Name="quickTags" Opacity="0" PreviewKeyDown="quickTags_PreviewKeyDown" />
+        </Grid>
     </Grid>
 </Window>

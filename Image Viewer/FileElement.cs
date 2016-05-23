@@ -95,5 +95,11 @@ namespace ImageViewer
                 return false;
             }
         }
+
+        public void SetTags(string[] split)
+        {
+            _tags = split.ToHashSet();
+            file.Properties.System.Keywords.Value = split;
+        }
     }
 }

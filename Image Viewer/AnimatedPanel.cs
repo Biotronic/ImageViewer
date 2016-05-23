@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
 namespace ImageViewer
 {
     internal class AnimatedPanel
     {
+        private static Action emptyAction = () => { };
         private readonly FrameworkElement _slider;
         private readonly IAnimatable _fader;
         private readonly UIElement _focus;
@@ -17,6 +20,7 @@ namespace ImageViewer
         private readonly DependencyProperty _property;
         private readonly DependencyProperty _parentProperty;
         private readonly Func<bool> _pred;
+        private readonly IInputElement _returnFocus;
         private Animation _animation = Animation.None;
 
         private enum Animation
@@ -26,7 +30,7 @@ namespace ImageViewer
             Closing
         }
 
-        public AnimatedPanel(FrameworkElement slider, IAnimatable fader, UIElement focus, FrameworkElement parent, DependencyProperty property, DependencyProperty parentProperty, Func<bool> pred)
+        public AnimatedPanel(FrameworkElement slider, IAnimatable fader, UIElement focus, FrameworkElement parent, DependencyProperty property, DependencyProperty parentProperty, Func<bool> pred, IInputElement returnFocus = null)
         {
             _slider = slider;
             _fader = fader;
@@ -34,10 +38,11 @@ namespace ImageViewer
             _parent = parent;
             _property = property;
             _pred = pred;
+            _returnFocus = returnFocus;
             _parentProperty = parentProperty;
         }
 
-        public bool Hide(Action end)
+        public bool Hide(Action end = null)
         {
             if (_animation == Animation.Closing) return false;
             if (_pred()) return false;
@@ -45,14 +50,16 @@ namespace ImageViewer
             _animation = Animation.Closing;
             Animate(0, () =>
             {
-                end();
+                end?.Invoke();
                 if (_animation == Animation.Closing)
                     _animation = Animation.None;
+
+                _returnFocus?.Focus();
             });
             return true;
         }
 
-        public bool Show(Action end)
+        public bool Show(Action end = null)
         {
             if (_animation == Animation.Opening) return false;
             if (!_pred()) return false;
@@ -62,7 +69,7 @@ namespace ImageViewer
 
             Animate(1, () =>
             {
-                end();
+                end?.Invoke();
                 if (_animation == Animation.Opening)
                     _animation = Animation.None;
             });
