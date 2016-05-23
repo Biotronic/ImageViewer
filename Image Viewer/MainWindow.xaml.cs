@@ -17,16 +17,22 @@ namespace ImageViewer
         private readonly FilteredFileList _files;
         private static MainWindow _instance;
         private WindowState _oldWindowState;
+        private AnimatedPanel _tagListAnimation;
 
         public MainWindow()
         {
             _instance = this;
             InitializeComponent();
+            _tagListAnimation = new AnimatedPanel(tagScrollList, panel, newTagBox, myGrid, MaxWidthProperty, ActualWidthProperty, () => tagScrollList.ActualWidth <= 10);
 
             var dir = Environment.CurrentDirectory;
             if (Environment.GetCommandLineArgs().Length > 1)
             {
-                dir = Path.GetDirectoryName(Environment.GetCommandLineArgs()[1]);
+                var s = Environment.GetCommandLineArgs()[1];
+                if (Directory.Exists(s))
+                    dir = s;
+                else if (File.Exists(s))
+                    dir = Path.GetDirectoryName(s);
             }
 
             _files = new FilteredFileList(dir, tagList);
@@ -181,25 +187,6 @@ namespace ImageViewer
             DelayedExec(TimeSpan.FromMilliseconds(250), () => ChangeImage());
         }
 
-        private void tagScrollList_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (tagScrollList.ActualWidth > MinTagViewWidth) return;
-            tagScrollList.Width = double.NaN;
-            Animate(0, 1, () => {
-                tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            });
-        }
-
-        private void tagScrollList_MouseLeave(object sender, MouseEventArgs e)
-        {
-            tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            if (tagScrollList.ActualWidth <= MinTagViewWidth) return;
-            Animate(1, 0, () =>
-            {
-                tagScrollList.Width = MinTagViewWidth;
-            });
-        }
-
         private static void DelayedExec(TimeSpan delay, Action action)
         {
             var timer = new DispatcherTimer { Interval = delay };
@@ -209,21 +196,6 @@ namespace ImageViewer
                 action();
             };
             timer.Start();
-        }
-
-        private double MinTagViewWidth => Math.Max(myGrid.ActualWidth*0.05, 20);
-
-        private void Animate(double from, double to, Action end)
-        {
-            tagList.Focus();
-
-            var se = new CubicEase() {EasingMode = EasingMode.EaseInOut};
-
-            var da1 = new DoubleAnimation(myGrid.ActualWidth * from + MinTagViewWidth, myGrid.ActualWidth * to + MinTagViewWidth, new Duration(TimeSpan.FromMilliseconds(125))) { EasingFunction = se };
-            var da2 = new DoubleAnimation(from, to, new Duration(TimeSpan.FromMilliseconds(250))) { EasingFunction = se };
-            da2.Completed += (o, args) =>end();
-            tagScrollList.BeginAnimation(ScrollViewer.MaxWidthProperty, da1);
-            panel.BeginAnimation(ItemsControl.OpacityProperty, da2);
         }
 
         public static SolidColorBrush TagMatch(string tag)
@@ -263,6 +235,23 @@ namespace ImageViewer
             CurrentFile.AddTag(tag);
             _files.AddTag(tag);
             txt.Text = "";
+        }
+
+        private double TagListTriggerArea => Math.Max(myGrid.ActualWidth * 0.05, 20);
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition(this);
+            if (pos.X < TagListTriggerArea)
+            {
+                _tagListAnimation.Show(() => tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Auto);
+            }
+        }
+
+        private void HideTagList(object sender, MouseEventArgs e)
+        {
+            tagScrollList.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            _tagListAnimation.Hide(() => { });
         }
     }
 }

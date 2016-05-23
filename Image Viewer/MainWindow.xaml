@@ -6,7 +6,7 @@
         xmlns:components="clr-namespace:Components;assembly=Components"
         mc:Ignorable="d"
         x:Name="Window"
-        Title="MainWindow" Height="350" Width="525" PreviewKeyDown="MainWindow_PreviewKeyDown">
+        Title="MainWindow" Height="350" Width="525" PreviewKeyDown="MainWindow_PreviewKeyDown" MouseMove="Window_MouseMove">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FF525252" Offset="0.003"/>
@@ -25,7 +25,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer x:Name="tagScrollList" VerticalScrollBarVisibility="Hidden" Grid.Column="0" Height="{Binding ElementName=myGrid, Path=ActualHeight}" Grid.RowSpan="3" Width="20" MouseEnter="tagScrollList_MouseEnter" MouseLeave="tagScrollList_MouseLeave" MaxWidth="20">
+        <ScrollViewer x:Name="tagScrollList" VerticalScrollBarVisibility="Hidden" Grid.Column="0" Height="{Binding ElementName=myGrid, Path=ActualHeight}" Grid.RowSpan="3" Width="auto" MouseLeave="HideTagList" MaxWidth="0">
             <StackPanel x:Name="panel"  Opacity="0">
                 <TextBox x:Name="newTagBox" PreviewKeyDown="newTagBox_PreviewKeyDown" />
                 <ItemsControl BorderThickness="0" x:Name="tagList" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="auto" VerticalContentAlignment="Center" Visibility="Visible">
